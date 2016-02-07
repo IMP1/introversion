@@ -1,0 +1,18 @@
+sfx_ddgroove.mp3
+"DD Groove" Kevin MacLeod
+http://incompetech.com/music/royalty-free/mp3-royaltyfree/DD%20Groove.mp3
+Licensed under Creative Commons: By Attribution 3.0 License
+http://creativecommons.org/licenses/by/3.0/
+
+
+gfx_crayon.ttf
+"DK Cool Crayon" Hanoded
+http://www.1001freefonts.com/dk_cool_crayon.font
+Free Demo license
+http://www.hanodedfonts.com
+
+gfx_hopeless.ttf
+"Hopeless Pkace" Jonathan S Harris
+http://www.1001freefonts.com/hopeless_place.font
+You may use this version of 'Hopeless Place' for personal use only. If you wish to use it commercially you will need to purchase a license.
+www.tattoowoo.com/fonts
