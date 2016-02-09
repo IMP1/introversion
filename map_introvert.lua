@@ -16,7 +16,7 @@ map.collisionBoxes = {
     tree    = {7, 36, 12, 9},
     bench   = {0, 5, 24, 8},
     bin     = {0, 4, 9, 9},
-    light   = {0, 20, 8, 10},
+    light   = {0, 24, 8, 8},
     flowers = {0, 0, 26, 27},
 }
 map.bgColour = {119, 165, 47}
@@ -24,7 +24,7 @@ map.items = {
     {"tree", 32, 32},
     {"tree", 256, 256},
     {"bench", 256, 280},
-    {"bin", 280, 280},
+    {"bin", 276, 281},
     {"bush", 64, 128},
     {"tree", 80, 128},
     {"bush", 96, 128},
@@ -37,5 +37,8 @@ map.items = {
 map.paths = {
 
 }
+map.moveGradient = function(x, y, dx, dy)
+    return dx, dy
+end
 
 return map

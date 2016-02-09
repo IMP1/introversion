@@ -11,33 +11,40 @@ function Player.new(x, y)
     setmetatable(this, Player)
     this.x = x or 0
     this.y = y or 0
+    this.justMoved = false
     return this
 end
 
+function Player:update(dt)
+    self.justMoved = false
+end
+
 function Player:move(dx, dy, map)
+    dx, dy = map.moveGradient(self.x, self.y, dx, dy)
     local newX = self.x + dx
     local newY = self.y + dy
     -- collision parameters
+    local cx, cy, cw, ch = self:getCollisionBox()
+    if self:canMoveTo(cx + dx, cy, cw, ch, map) then
+        self.x = newX
+        self.justMoved = true
+    end
+    if self:canMoveTo(cx, cy + dy, cw, ch, map) then
+        self.y = newY
+        self.justMoved = true
+    end
+end
+
+function Player:getCollisionBox()
     local _, _, w, h = self.quad:getViewport()
     local cox, coy, cw, ch = unpack(self.collisionBox)
-
-    local cx, cy = newX + cox - w / 2, self.y + coy - h
-    if self:canMoveTo(cx, cy, cw, ch, map) then
-        self.x = newX
-    end
-    cx, cy = self.x + cox - w / 2, newY + coy - h
-    if self:canMoveTo(cx, cy, cw, ch, map) then
-        self.y = newY
-    end
+    local cx, cy = self.x + cox - w / 2, self.y + coy - h
+    return cx, cy, cw, ch
 end
 
 function Player:canMoveTo(x, y, w, h, map)
     for _, obj in pairs(map.items) do
-        local _, _, ow, oh = map.tiles[obj[1]]:getViewport()
-        local cx, cy = obj[2], obj[3]
-        local cox, coy, cw, ch = unpack(map.collisionBoxes[obj[1]])
-        cx, cy = cx + cox - ow / 2, cy + coy - oh
-
+        local cx, cy, cw, ch = scene:getObjectCollisionBox(obj)
         local overlap = (cx >= x + w or
                          x >= cx + cw or
                          cy >= y + h or
@@ -48,8 +55,14 @@ function Player:canMoveTo(x, y, w, h, map)
 end
 
 function Player:draw()
+    love.graphics.setColor(255, 255, 255)
     local _, _, w, h = Player.quad:getViewport()
     love.graphics.draw(Player.image, Player.quad, self.x - w / 2, self.y - h)
+    if DEBUG and drawCollisions then
+        love.graphics.setColor(128, 0, 0, 128)
+        local cx, cy, cw, ch = self:getCollisionBox()
+        love.graphics.rectangle("fill", cx, cy, cw, ch)
+    end
 end
 
 return Player
