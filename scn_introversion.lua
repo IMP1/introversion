@@ -16,8 +16,8 @@ function Scene:setup()
     self.fadingIn = true
     self.fadeIn = 0
     self.fadeInSpeed = 128
-    self.drawables = {}
-    self.needRefreshDrawables = true
+    self.objects = {}
+    self.needRefreshObjects = true
 end
 
 function Scene:createMap()
@@ -49,22 +49,22 @@ function Scene:update(dt)
     end
     self:updatePlayer(dt)
     self.camera:centreOn(self.player.x, self.player.y)
-    if self.needRefreshDrawables then
+    if self.needRefreshObjects then
         self:refreshDrawables()
     end
 end
 
 function Scene:refreshDrawables()
-    self.drawables = {}
+    self.objects = {}
     for _, obj in pairs(self.map.items) do
-        table.insert(self.drawables, self:tileToDrawable(obj))
+        table.insert(self.objects, self:tileToDrawable(obj))
     end
     for _, npc in pairs(self.npcs) do
-        table.insert(self.drawables, npc)
+        table.insert(self.objects, npc)
     end
-    table.insert(self.drawables, self.player)
-    table.sort(self.drawables, function(a, b) return a.y < b.y end)
-    self.needRefreshDrawables = false
+    table.insert(self.objects, self.player)
+    table.sort(self.objects, function(a, b) return a.y < b.y end)
+    self.needRefreshObjects = false
 end
 
 function Scene:tileToDrawable(obj)
@@ -78,9 +78,12 @@ function Scene:tileToDrawable(obj)
             love.graphics.draw(scene.map.tileImage, this.quad, this.x - w/2, this.y - h)
             if DEBUG and drawCollisions then
                 love.graphics.setColor(128, 0, 0, 128)
-                local cx, cy, cw, ch = scene:getObjectCollisionBox(this)
+                local cx, cy, cw, ch = this:getCollisionBox()
                 love.graphics.rectangle("fill", cx, cy, cw, ch)
             end
+        end,
+        getCollisionBox = function(this)
+            return scene:getObjectCollisionBox(this)
         end,
         quad = scene.map.tiles[obj[1]],
     }
@@ -97,9 +100,9 @@ function Scene:updatePlayer(dt)
         dy = dy / ROOT_2
     end
     self.player:update(dt)
-    self.player:move(dx, dy, self.map)
+    self.player:move(dx, dy, self.map, self.objects)
     if self.player.justMoved then
-        self.needRefreshDrawables = true
+        self.needRefreshObjects = true
     end
 end
 
@@ -114,9 +117,9 @@ function Scene:draw()
 end
 
 function Scene:getObjectCollisionBox(obj)
-    local _, _, ow, oh = self.map.tiles[obj[1]]:getViewport()
-    local cox, coy, cw, ch = unpack(self.map.collisionBoxes[obj[1]])
-    local cx, cy = obj[2] + cox - ow / 2, obj[3] + coy - oh
+    local _, _, ow, oh = self.map.tiles[obj.name]:getViewport()
+    local cox, coy, cw, ch = unpack(self.map.collisionBoxes[obj.name])
+    local cx, cy = obj.x + cox - ow / 2, obj.y + coy - oh
     return cx, cy, cw, ch
 end
 
@@ -124,7 +127,7 @@ function Scene:drawMap()
     love.graphics.setColor(self.map.bgColour)
     love.graphics.rectangle("fill", 0, 0, self.map.width, self.map.height)
     love.graphics.setColor(255, 255, 255)
-    for _, obj in pairs(self.drawables) do
+    for _, obj in pairs(self.objects) do
         obj:draw()
     end
 end
