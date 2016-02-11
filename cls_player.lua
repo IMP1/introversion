@@ -19,17 +19,17 @@ function Player:update(dt)
     self.justMoved = false
 end
 
-function Player:move(dx, dy, map)
+function Player:move(dx, dy, map, objects)
     dx, dy = map.moveGradient(self.x, self.y, dx, dy)
     local newX = self.x + dx
     local newY = self.y + dy
     -- collision parameters
     local cx, cy, cw, ch = self:getCollisionBox()
-    if self:canMoveTo(cx + dx, cy, cw, ch, map) then
+    if self:canMoveTo(cx + dx, cy, cw, ch, objects) then
         self.x = newX
         self.justMoved = true
     end
-    if self:canMoveTo(cx, cy + dy, cw, ch, map) then
+    if self:canMoveTo(cx, cy + dy, cw, ch, objects) then
         self.y = newY
         self.justMoved = true
     end
@@ -42,14 +42,16 @@ function Player:getCollisionBox()
     return cx, cy, cw, ch
 end
 
-function Player:canMoveTo(x, y, w, h, map)
-    for _, obj in pairs(map.items) do
-        local cx, cy, cw, ch = scene:getObjectCollisionBox(obj)
-        local overlap = (cx >= x + w or
-                         x >= cx + cw or
-                         cy >= y + h or
-                         y >= cy + ch)
-        if not overlap then return false end
+function Player:canMoveTo(x, y, w, h, objects)
+    for _, obj in pairs(objects) do
+        if obj ~= self then
+            local cx, cy, cw, ch = obj:getCollisionBox()
+            local overlap = (cx >= x + w or
+                             x >= cx + cw or
+                             cy >= y + h or
+                             y >= cy + ch)
+            if not overlap then return false end
+        end
     end
     return true
 end
