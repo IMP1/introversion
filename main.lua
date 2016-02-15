@@ -37,8 +37,8 @@ function love.update(dt)
         scene:update(dt)
     end
     if nextScene then
-    	scene = nextScene.class.new(unpack(nextScene.params or {}))
-    	nextScene = nil
+        scene = nextScene.class.new(unpack(nextScene.params or {}))
+        nextScene = nil
     end
 end
 
@@ -69,7 +69,7 @@ end
 
 function love.keyreleased(key)
     if not (DEBUG and console) then
-    	if scene and scene.keyreleased then
+        if scene and scene.keyreleased then
             scene:keyreleased(key)
         end
     end
