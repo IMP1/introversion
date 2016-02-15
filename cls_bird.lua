@@ -1,7 +1,8 @@
 local Bird = {}
 Bird.__index = Bird
 
-Bird.walkSpeed =  -- pixels per second
+Bird.flySpeed = 96 -- pixels per second
+Bird.walkSpeed = 16 -- pixels per second
 
 function Bird.new(x, y)
     local this = {}
@@ -19,9 +20,9 @@ end
 function Bird:update(dt)
     local speed = 0
     if self.isFlying then
-
+        speed = Bird.flySpeed
     elseif self.isWalking then
-
+        speed = Bird.walkSpeed
     end
     if speed == 0 then
         self.idleTimer = self.idleTimer + dt
