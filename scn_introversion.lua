@@ -49,6 +49,9 @@ function Scene:update(dt)
     end
     self:updatePlayer(dt)
     self.camera:centreOn(self.player.x, self.player.y)
+    for _, npc in pairs(self.npcs) do
+        npc:update(dt)
+    end
     if self.needRefreshObjects then
         self:refreshDrawables()
     end
