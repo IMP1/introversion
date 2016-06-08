@@ -59,8 +59,8 @@ function camera:setPosition(x, y)
 end
 
 function camera:centreOn(x, y)
-    local viewWidth = love.window.getWidth() / self.scaleX
-    local viewHeight = love.window.getHeight() / self.scaleY
+    local viewWidth = love.graphics.getWidth() / self.scaleX
+    local viewHeight = love.graphics.getHeight() / self.scaleY
     self:setPosition(x - viewWidth / 2, y - viewHeight / 2)
 end
 
