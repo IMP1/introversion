@@ -41,6 +41,12 @@ function Scene:populateMap()
         table.insert(self.npcs, npc)
     end
     -- ~TODO: add peeps
+    self.fauna = {}
+    local n = 1
+    for i = 1, n do
+        local bird = Bird.new(400, 100)
+        table.insert(self.fauna, bird)
+    end
 end
 
 function Scene:update(dt)
@@ -52,8 +58,29 @@ function Scene:update(dt)
     for _, npc in pairs(self.npcs) do
         npc:update(dt)
     end
+    for _, b in pairs(self.fauna) do
+        b:update(dt)
+    end
     if self.needRefreshObjects then
         self:refreshDrawables()
+    end
+end
+
+function Scene:updatePlayer(dt)
+    self.player.through = love.keyboard.isDown("lctrl")
+    local dx, dy = 0, 0
+    if love.keyboard.isDown("w") then dy = dy - dt * self.player.WALK_SPEED end
+    if love.keyboard.isDown("a") then dx = dx - dt * self.player.WALK_SPEED end
+    if love.keyboard.isDown("s") then dy = dy + dt * self.player.WALK_SPEED end
+    if love.keyboard.isDown("d") then dx = dx + dt * self.player.WALK_SPEED end
+    if dx ~= 0 and dy ~= 0 then
+        dx = dx / ROOT_2
+        dy = dy / ROOT_2
+    end
+    self.player:update(dt)
+    self.player:move(dx, dy, self.map, self.objects)
+    if self.player.justMoved then
+        self.needRefreshObjects = true
     end
 end
 
@@ -64,6 +91,9 @@ function Scene:refreshDrawables()
     end
     for _, npc in pairs(self.npcs) do
         table.insert(self.objects, npc)
+    end
+    for _, b in pairs(self.fauna) do
+        table.insert(self.objects, b)
     end
     table.insert(self.objects, self.player)
     table.sort(self.objects, function(a, b) return a.y < b.y end)
@@ -92,30 +122,13 @@ function Scene:tileToDrawable(obj)
     }
 end
 
-function Scene:updatePlayer(dt)
-    local dx, dy = 0, 0
-    if love.keyboard.isDown("w") then dy = dy - dt * self.player.WALK_SPEED end
-    if love.keyboard.isDown("a") then dx = dx - dt * self.player.WALK_SPEED end
-    if love.keyboard.isDown("s") then dy = dy + dt * self.player.WALK_SPEED end
-    if love.keyboard.isDown("d") then dx = dx + dt * self.player.WALK_SPEED end
-    if dx ~= 0 and dy ~= 0 then
-        dx = dx / ROOT_2
-        dy = dy / ROOT_2
-    end
-    self.player:update(dt)
-    self.player:move(dx, dy, self.map, self.objects)
-    if self.player.justMoved then
-        self.needRefreshObjects = true
-    end
-end
-
 function Scene:draw()
     self.camera:set()
     self:drawMap()
     self.camera:unset()
     if self.fadingIn then
         love.graphics.setColor(255, 255, 255, 255 - self.fadeIn)
-        love.graphics.rectangle("fill", 0, 0, love.window.getWidth(), love.window.getHeight())
+        love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
     end
 end
 
@@ -124,6 +137,18 @@ function Scene:getObjectCollisionBox(obj)
     local cox, coy, cw, ch = unpack(self.map.collisionBoxes[obj.name])
     local cx, cy = obj.x + cox - ow / 2, obj.y + coy - oh
     return cx, cy, cw, ch
+end
+
+function Scene:personNearTo(x, y, distance)
+    local people = { self.player, unpack(self.npcs) }
+    for _, p in pairs(people) do
+        local dx = p.x - x
+        local dy = p.y - y
+        if dx * dx + dy * dy <= distance * distance then
+            return p
+        end
+    end
+    return nil
 end
 
 function Scene:drawMap()
