@@ -1,7 +1,7 @@
 local Scene = { Name = "splash" }
 Scene.__index = Scene
 
-Scene.animation = Animation.new(0, love.window.getHeight() - 540, 0.1, "gfx_crow.png", 9, 1, true)
+Scene.animation = Animation.new(0, love.graphics.getHeight() - 540, 0.1, "gfx_crow.png", 9, 1, true)
 Scene.sound = love.audio.newSource("sfx_bird.ogg", "static")
 Scene.sound:setPitch(0.8)
 
@@ -53,12 +53,12 @@ function Scene:draw()
     if self.timer > 1 then
         love.graphics.setFont(Fonts.splash)
         love.graphics.setColor(255, 255, 255, self.titleOpacity)
-        love.graphics.printf("Born for Joy", 500, love.window.getHeight() / 2 - 128, love.window.getWidth() - 500, "center")
-        love.graphics.printf("presents...", 500, love.window.getHeight() / 2 - 64, love.window.getWidth() - 500, "center")
+        love.graphics.printf("Born for Joy", 500, love.graphics.getHeight() / 2 - 128, love.graphics.getWidth() - 500, "center")
+        love.graphics.printf("presents...", 500, love.graphics.getHeight() / 2 - 64, love.graphics.getWidth() - 500, "center")
     end
     if self.titleOpacity == 255 then
         love.graphics.setColor(0, 0, 0, 255 - self.sceneOpacity)
-        love.graphics.rectangle("fill", 0, 0, love.window.getWidth(), love.window.getHeight())
+        love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
     end
 end
 
