@@ -10,6 +10,7 @@ Animation = require("lib_animation")
 
 Player = require("cls_player")
 NPC1 = require("cls_npc1")
+Bird = require("cls_bird")
 
 SceneSplash = require("scn_splash")
 SceneTitle = require("scn_title")
