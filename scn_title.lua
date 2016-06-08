@@ -42,15 +42,15 @@ function Scene:draw()
     love.graphics.setBackgroundColor(self.bg, self.bg, self.bg)
     love.graphics.setColor(self.fg, self.fg, self.fg, 255 - self.fg)
     love.graphics.setFont(Fonts.title)
-    love.graphics.printf("Re Ov So AL", 0, 64, love.window.getWidth(), "center")
+    love.graphics.printf("Re Ov So AL", 0, 64, love.graphics.getWidth(), "center")
     if self.fg == 0 and not self.fadingOut then
         love.graphics.setColor(0, 0, 0, self.promptOpacity)
         love.graphics.setFont(Fonts.promptBig)
-        love.graphics.printf("Press any key to begin", 0, love.window.getHeight() - 128, love.window.getWidth(), "center")
+        love.graphics.printf("Press any key to begin", 0, love.graphics.getHeight() - 128, love.graphics.getWidth(), "center")
     end
     if self.fadingOut then
         love.graphics.setColor(255, 255, 255, self.fadeOut)
-        love.graphics.rectangle("fill", 0, 0, love.window.getWidth(), love.window.getHeight())
+        love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
     end
 end
 
