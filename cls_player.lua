@@ -11,6 +11,7 @@ function Player.new(x, y)
     setmetatable(this, Player)
     this.x = x or 0
     this.y = y or 0
+    this.through = false
     this.justMoved = false
     return this
 end
@@ -43,8 +44,9 @@ function Player:getCollisionBox()
 end
 
 function Player:canMoveTo(x, y, w, h, objects)
+    if self.through then return true end
     for _, obj in pairs(objects) do
-        if obj ~= self then
+        if obj ~= self and obj.getCollisionBox then
             local cx, cy, cw, ch = obj:getCollisionBox()
             local overlap = (cx >= x + w or
                              x >= cx + cw or
