@@ -17,12 +17,17 @@ function NPC.new(x, y)
     local _, _, w, h = NPC.quad:getViewport()
     this.width = w
     this.height = h
-    this.isTalking = true
+    this.isTalking = false
     this.currentMessage = "" -- what they're in the process of saying
     this.currentText = ""    -- what they've gotten out so far
-    this.currentMessage = "Hey there. How's it going?" -- DEBUG
     this.textPauseTimer = 0
     this.textTimer = 0
+    this.textQueue = {}
+    --[[ -- <DEBUG>
+    this.isTalking = true
+    this.currentMessage = "Hey there!\nHow're you doing?" 
+    this.textQueue = {"I ran into your mother the other day", "She told me you've joined the school choir!"}
+    --]] -- </DEBUG>
     return this
 end
 
@@ -40,7 +45,7 @@ function NPC:updateSpeech(dt)
     if self.currentText == self.currentMessage then
         self.textPauseTimer = self.textPauseTimer + dt
         if self.textPauseTimer > NPC.speechWait then
-            self.isTalking = false
+            self:nextSpeech()
         end
     else
         self.textTimer = self.textTimer + dt
@@ -49,6 +54,18 @@ function NPC:updateSpeech(dt)
             self.currentText = self.currentMessage:sub(1, index)
             self.textTimer = self.textTimer - NPC.speechSpeed
         end
+    end
+end
+
+function NPC:nextSpeech()
+    if #self.textQueue == 0 then
+        self.isTalking = false
+    else
+        self.currentMessage = self.textQueue[1]
+        self.currentText = ""
+        self.textTimer = 0
+        self.textPauseTimer = 0
+        table.remove(self.textQueue, 1)
     end
 end
 
@@ -75,21 +92,26 @@ end
 
 function NPC:drawSpeech()
     local unscale = scene.camera.scaleX
+    local maxWidth = 128
     local padding = 8   -- distance between edge of bubble and text
     local gap = 8       -- distance between edge of bubble and NPC
-    local w = love.graphics.getFont():getWidth(self.currentMessage) + padding * 2
-    local h = love.graphics.getFont():getHeight() + padding * 2
+    love.graphics.setFont(NPC.speechFont)
+    local w, lines = love.graphics.getFont():getWrap(self.currentMessage, maxWidth)
+    w = w + padding * 2
+    if type(lines) == "table" then lines = #lines end
+    local h = (love.graphics.getFont():getHeight() * lines) + (padding * 2)
     local x = self.x - (w / unscale) / 2
     local y = self.y - (h / unscale) - self.height - gap
-    local roundedness = 4
+    local roundedness = 8
     love.graphics.push()
+    love.graphics.setLineStyle("rough")
+    love.graphics.setLineWidth(unscale)
     love.graphics.scale(1 / unscale)
     love.graphics.setColor(255, 255, 255)
     love.graphics.rectangle("fill", x * unscale, y * unscale, w, h, roundedness)
     love.graphics.setColor(0, 0, 0)
     love.graphics.rectangle("line", x * unscale, y * unscale, w, h, roundedness)
-    love.graphics.setFont(NPC.speechFont)
-    love.graphics.print(self.currentText, x * unscale + padding, y * unscale + padding)
+    love.graphics.printf(self.currentText, x * unscale + padding, y * unscale + padding, w - padding * 2)
     love.graphics.pop()
 end
 
