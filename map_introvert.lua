@@ -19,7 +19,7 @@ map.collisionBoxes = {
     light   = {0, 24, 8, 8},
     flowers = {0, 0, 26, 27},
 }
-map.bgColour = {119, 165, 47}
+map.bgColour = {0.46, 0.64, 0.18}
 map.items = {
     {"tree", 32, 32},
     {"tree", 256, 256},

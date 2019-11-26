@@ -15,7 +15,7 @@ end
 function Scene:setup()
     self.fadingIn = true
     self.fadeIn = 0
-    self.fadeInSpeed = 128
+    self.fadeInSpeed = 0.5
     self.objects = {}
     self.needRefreshObjects = true
 end
@@ -106,11 +106,11 @@ function Scene:tileToDrawable(obj)
         x = obj[2],
         y = obj[3],
         draw = function(this) 
-            love.graphics.setColor(255, 255, 255)
+            love.graphics.setColor(1, 1, 1)
             local _, _, w, h = this.quad:getViewport()
             love.graphics.draw(scene.map.tileImage, this.quad, this.x - w/2, this.y - h)
             if DEBUG and drawCollisions then
-                love.graphics.setColor(128, 0, 0, 128)
+                love.graphics.setColor(0.5, 0, 0, 0.5)
                 local cx, cy, cw, ch = this:getCollisionBox()
                 love.graphics.rectangle("fill", cx, cy, cw, ch)
             end
@@ -127,7 +127,7 @@ function Scene:draw()
     self:drawMap()
     self.camera:unset()
     if self.fadingIn then
-        love.graphics.setColor(255, 255, 255, 255 - self.fadeIn)
+        love.graphics.setColor(1, 1, 1, 1 - self.fadeIn)
         love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
     end
 end
@@ -154,7 +154,7 @@ end
 function Scene:drawMap()
     love.graphics.setColor(self.map.bgColour)
     love.graphics.rectangle("fill", 0, 0, self.map.width, self.map.height)
-    love.graphics.setColor(255, 255, 255)
+    love.graphics.setColor(1, 1, 1)
     for _, obj in pairs(self.objects) do
         obj:draw()
     end

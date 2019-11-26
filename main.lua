@@ -25,8 +25,8 @@ Fonts = {
 }
 
 function love.load()
-    -- scene = SceneSplash.new(SceneTitle.bgm)
-    scene = SceneIntrovert.new()
+    scene = SceneSplash.new(SceneTitle.bgm)
+    -- scene = SceneIntrovert.new()
     nextScene = nil
 end
 
@@ -49,10 +49,10 @@ function love.draw()
     end
     if DEBUG then
         if console then
-            love.graphics.setColor(0, 0, 0, 128)
+            love.graphics.setColor(0, 0, 0, 0.5)
             local y = love.window.getHeight() - 32
             love.graphics.rectangle("fill", 0, y, love.window.getWidth(), 32)
-            love.graphics.setColor(255, 255, 255, 128)
+            love.graphics.setColor(1, 1, 1, 0.5)
             local x = 32 + love.graphics.getFont():getWidth(consoleCommand)
             love.graphics.print(consoleCommand, 32, y + 8)
             love.graphics.line(x + 4, y + 4, x + 4, y + 32 - 8)

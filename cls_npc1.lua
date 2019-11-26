@@ -23,11 +23,11 @@ function NPC.new(x, y)
     this.textPauseTimer = 0
     this.textTimer = 0
     this.textQueue = {}
-    --[[ -- <DEBUG>
-    this.isTalking = true
-    this.currentMessage = "Hey there!\nHow're you doing?" 
-    this.textQueue = {"I ran into your mother the other day", "She told me you've joined the school choir!"}
-    --]] -- </DEBUG>
+     -- <DEBUG>
+    -- this.isTalking = true
+    -- this.currentMessage = "Hey there!\nHow're you doing?" 
+    -- this.textQueue = {"I ran into your mother the other day", "She told me you've joined the school choir!"}
+     -- </DEBUG>
     return this
 end
 
